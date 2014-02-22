@@ -1,0 +1,10 @@
+{
+  "name": "lt-jasmin",
+  "author": "Ivan Pierre <ivan@kilroysoft.ch>",
+  "version": "0.0.1",
+  "source": "https://github.com/ivanpierre/lt-jasmin",
+  "desc": "Jasmin language plugin for Light Table",
+  "dependencies": {
+  },
+  "behaviors": "jasmin.behaviors"
+}

@@ -1,0 +1,3 @@
+{:+ {:app [(:lt.objs.plugins/load-js ["codemirror/jasmin.js"])]
+     :files [(:lt.objs.files/file-types [{:name "Jasmin" :exts [:j] :mime "text/x-jasmin" :tags [:editor.jasmin]}])]
+     }}
