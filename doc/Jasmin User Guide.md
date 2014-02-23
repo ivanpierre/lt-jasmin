@@ -212,7 +212,7 @@ For example, the file defining MyClass might start with the directives:
     .class  public MyClass
     .super  java/lang/Object
 
-## .source directive
+### .source directive
 
 The .source directive is optional. It specifies the value of the "SourceFile" attribute for the class file. (This is used by Java to print out debugging info if something goes wrong in one of the methods in the class). If you generated the Jasmin file automatically (e.g. as the result of compiling a file written in another syntax) you should use the .source directive to tell Java the name of the originating file. Note that the source file name should not include any pathname. Use "foo.src" but not "/home/user/foo.src".
 
@@ -389,4 +389,5 @@ JVM instructions are placed between the .method and .end method directives. VM i
         pop          ; remove the top item from the stack.
 
 See Jasmin Instructions for more details on the syntax of instructions in Jasmin.
-Copyright (c) Jonathan Meyer, July 1996
+
+*Copyright (c) Jonathan Meyer, July 1996*

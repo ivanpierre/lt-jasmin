@@ -20,72 +20,71 @@ The following is a quick introduction to JVM and Jasmin.
 
 A simple program in F3 :
 
-```
-int func main()
-     var x:int;
 
-     read x;
-     x := x + 3;
-     print x;
-     return 0;
-endfunc
-```
+    int func main()
+         var x:int;
+
+         read x;
+         x := x + 3;
+         print x;
+         return 0;
+    endfunc
+
 
 The same program in Jasmin :
 
-```
-.class public simple
-.super java/lang/Object
-.method public <init>()V
-    aload_0
-    invokespecial java/lang/Object/<init>()V
-    return
-.end method
-.method public static main([Ljava/lang/String;)V
-    .limit stack 5
-    .limit locals 100
-    ldc 0
-    istore 1      ; initialize x to zero and store it in local variable 1
+    .class public simple
+    .super java/lang/Object
+    .method public <init>()V
+        aload_0
+        invokespecial java/lang/Object/<init>()V
+        return
+    .end method
+    .method public static main([Ljava/lang/String;)V
+        .limit stack 5
+        .limit locals 100
+        ldc 0
+        istore 1      ; initialize x to zero and store it in local variable 1
 
-                  ; the read function starts at this point
-    ldc 0
-    istore 50     ; storage for a dummy integer for reading it by read
- Label1:
-    getstatic java/lang/System/in Ljava/io/InputStream;
-    invokevirtual java/io/InputStream/read()I
-    istore 51
-    iload 51
-    ldc 10
-    isub
-    ifeq Label2
-    iload 51
-    ldc 32
-    isub
-    ifeq Label2
-    iload 51
-    ldc 48
-    isub
-    ldc 10
-    iload 50
-    imul
-    iadd
-    istore 50
-    goto Label1
-  Label2:          ; now our dummy integer contains the
-                   ; integer read from the keyboard
-    iload 50       ; read function ends here
-    istore 1       ; store this value in x
-    iload 1
-    ldc 3
-    iadd
-    istore 1       ; x=x+3
-    iload 1
-    getstatic java/lang/System/out Ljava/io/PrintStream;
-    swap
-    invokevirtual java/io/PrintStream/println(I)V   ; print x
-    return        ; return from main
-.end method
-```
+                      ; the read function starts at this point
+        ldc 0
+        istore 50     ; storage for a dummy integer for reading it by read
+     Label1:
+        getstatic java/lang/System/in Ljava/io/InputStream;
+        invokevirtual java/io/InputStream/read()I
+        istore 51
+        iload 51
+        ldc 10
+        isub
+        ifeq Label2
+        iload 51
+        ldc 32
+        isub
+        ifeq Label2
+        iload 51
+        ldc 48
+        isub
+        ldc 10
+        iload 50
+        imul
+        iadd
+        istore 50
+        goto Label1
+      Label2:          ; now our dummy integer contains the
+                       ; integer read from the keyboard
+        iload 50       ; read function ends here
+        istore 1       ; store this value in x
+        iload 1
+        ldc 3
+        iadd
+        istore 1       ; x=x+3
+        iload 1
+        getstatic java/lang/System/out Ljava/io/PrintStream;
+        swap
+        invokevirtual java/io/PrintStream/println(I)V   ; print x
+        return        ; return from main
+    .end method
+
 
 The Jasmin code for the program looks quite complicated compared to the F3 version, but you do not need to know all the things around. Most of the code you see above will be present in all of the files you generate. So you can consider the above Jasmin code as a template.
 
@@ -97,7 +96,7 @@ A Jasmin file consists of directives, labels and instructions. The lines beginni
 
 The method (function) definitions begin with a .method directive and end with .end method directive.
 
-The <init> method is an instance initialization method and again will be present for all F3 programs. It is used to initialize a new instance of the class. This is a process, which also includes initialization of the inherited class, which, in this case, is java/lang/Object.
+The \<init> method is an instance initialization method and again will be present for all F3 programs. It is used to initialize a new instance of the class. This is a process, which also includes initialization of the inherited class, which, in this case, is java/lang/Object.
 
 The main method is where the translated code of your F3 program resides. Notice that the main function has a parameter which is an array of strings and it returns void. The main function for JVM has to have these specifications to qualify as an entry point to the program.
 
@@ -245,261 +244,252 @@ To implement a function in F3 as a subroutine, what you have to do is to push th
 
 There's no such thing as functions with variable number of parameters is java. So a direct implementation of the library functions read and print is not possible. You should handle read and print function invocations at the compile time. The Jasmin method declarations for a one parameter read function and a polymorphic one parameter print function are given in this section.
 
+    ; int read()
+    .method public static read()I
+        .limit locals 10
+        .limit stack 10
+        ldc 0
+        istore 1  ; this will hold our final integer
+    Label1:
+        getstatic java/lang/System/in Ljava/io/InputStream;
+        invokevirtual java/io/InputStream/read()I
+        istore 2
+        iload 2
+        ldc 10   ; the newline delimiter
+        isub
+        ifeq Label2
+        iload 2
+        ldc 32   ; the space delimiter
+        isub
+        ifeq Label2
+        iload 2
+        ldc 48   ; we have our digit in ASCII, have to subtract it from 48
+        isub
+        ldc 10
+        iload 1
+        imul
+        iadd
+        istore 1
+        goto Label1
+    Label2:
+        ;when we come here we have our integer computed in Local Variable 1
+        iload 1
+        ireturn
+    .end method
 
-```
-; int read()
-.method public static read()I
-    .limit locals 10
-    .limit stack 10
-    ldc 0
-    istore 1  ; this will hold our final integer
-Label1:
-    getstatic java/lang/System/in Ljava/io/InputStream;
-    invokevirtual java/io/InputStream/read()I
-    istore 2
-    iload 2
-    ldc 10   ; the newline delimiter
-    isub
-    ifeq Label2
-    iload 2
-    ldc 32   ; the space delimiter
-    isub
-    ifeq Label2
-    iload 2
-    ldc 48   ; we have our digit in ASCII, have to subtract it from 48
-    isub
-    ldc 10
-    iload 1
-    imul
-    iadd
-    istore 1
-    goto Label1
-Label2:
-    ;when we come here we have our integer computed in Local Variable 1
-    iload 1
-    ireturn
-.end method
+    ; void print(int)
+    .method public static print(I)V
+        .limit locals 5
+        .limit stack 5
+        iload 0
+        getstatic java/lang/System/out Ljava/io/PrintStream;
+        swap
+        invokevirtual java/io/PrintStream/print(I)V
+        return
+    .end method
 
-; void print(int)
-.method public static print(I)V
-    .limit locals 5
-    .limit stack 5
-    iload 0
-    getstatic java/lang/System/out Ljava/io/PrintStream;
-    swap
-    invokevirtual java/io/PrintStream/print(I)V
-    return
-.end method
+    ; void print(float)
+    .method public static print(F)V
+        .limit locals 5
+        .limit stack 5
+        fload 0
+        getstatic java/lang/System/out Ljava/io/PrintStream;
+        swap
+        invokevirtual java/io/PrintStream/print(F)V
+        return
+    .end method
 
-; void print(float)
-.method public static print(F)V
-    .limit locals 5
-    .limit stack 5
-    fload 0
-    getstatic java/lang/System/out Ljava/io/PrintStream;
-    swap
-    invokevirtual java/io/PrintStream/print(F)V
-    return
-.end method
-
-; void print(string)
-.method public static print(Ljava/lang/String;)V
-    .limit locals 5
-    .limit stack 5
-    aload 0
-    getstatic java/lang/System/out Ljava/io/PrintStream;
-    swap
-    invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V
-    return
-.end method
-```
+    ; void print(string)
+    .method public static print(Ljava/lang/String;)V
+        .limit locals 5
+        .limit stack 5
+        aload 0
+        getstatic java/lang/System/out Ljava/io/PrintStream;
+        swap
+        invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V
+        return
+    .end method
 
 ## 6. An Example of F3 to Jasmin Translation
 
 In this section a F3 program which has a recursive function is translated into Jasmin. This example will give you an idea on handling function calls, especially recursive ones. Here is our F3 code for the example:
 
+    var x:int, y:int;
 
-```
-var x:int, y:int;
+    int func gcd(u:int, v:int)
+         var tmp:int;
+         if u < v then
+              tmp := u;
+              u := v;
+              v := tmp;
+         endif;
+         if v = 0 then
+              return u;
+         else
+              return gcd(v, u - v);
+         endif;
+    endfunc /* gcd */
 
-int func gcd(u:int, v:int)
-     var tmp:int;
-     if u < v then
-          tmp := u;
-          u := v;
-          v := tmp;
-     endif;
-     if v = 0 then
-          return u;
-     else
-          return gcd(v, u - v);
-     endif;
-endfunc /* gcd */
-
-int func main()
-     read "Enter two numbers: ", x, y;
-     print x/y, " ", gcd(x, y), "\n";
-     return 0;
-endfunc /* main */
-```
+    int func main()
+         read "Enter two numbers: ", x, y;
+         print x/y, " ", gcd(x, y), "\n";
+         return 0;
+    endfunc /* main */
 
 Here is the Jasmin code for the above F3 program:
 
-```
-.class public gcd
-.super java/lang/Object
-.method public ()V
-    aload_0
-    invokespecial java/lang/Object/()V
-    return
-.end method
+    .class public gcd
+    .super java/lang/Object
+    .method public ()V
+        aload_0
+        invokespecial java/lang/Object/()V
+        return
+    .end method
 
-; int read()
-.method public static read()I
-    .limit locals 10
-    .limit stack 10
-    ldc 0
-    istore 1  ; this will hold our final integer
-Label1:
-    getstatic java/lang/System/in Ljava/io/InputStream;
-    invokevirtual java/io/InputStream/read()I
-    istore 2
-    iload 2
-    ldc 10   ; the newline delimiter
-    isub
-    ifeq Label2
-    iload 2
-    ldc 32   ; the space delimiter
-    isub
-    ifeq Label2
-    iload 2
-    ldc 48   ; we have our digit in ASCII, have to subtract it from 48
-    isub
-    ldc 10
-    iload 1
-    imul
-    iadd
-    istore 1
-    goto Label1
-Label2:
-    ;when we come here we have our integer computed in Local Variable 1
-    iload 1
-    ireturn
-.end method
+    ; int read()
+    .method public static read()I
+        .limit locals 10
+        .limit stack 10
+        ldc 0
+        istore 1  ; this will hold our final integer
+    Label1:
+        getstatic java/lang/System/in Ljava/io/InputStream;
+        invokevirtual java/io/InputStream/read()I
+        istore 2
+        iload 2
+        ldc 10   ; the newline delimiter
+        isub
+        ifeq Label2
+        iload 2
+        ldc 32   ; the space delimiter
+        isub
+        ifeq Label2
+        iload 2
+        ldc 48   ; we have our digit in ASCII, have to subtract it from 48
+        isub
+        ldc 10
+        iload 1
+        imul
+        iadd
+        istore 1
+        goto Label1
+    Label2:
+        ;when we come here we have our integer computed in Local Variable 1
+        iload 1
+        ireturn
+    .end method
 
-; void print(int)
-.method public static print(I)V
-    .limit locals 5
-    .limit stack 5
-    iload 0
-    getstatic java/lang/System/out Ljava/io/PrintStream;
-    swap
-    invokevirtual java/io/PrintStream/print(I)V
-    return
-.end method
+    ; void print(int)
+    .method public static print(I)V
+        .limit locals 5
+        .limit stack 5
+        iload 0
+        getstatic java/lang/System/out Ljava/io/PrintStream;
+        swap
+        invokevirtual java/io/PrintStream/print(I)V
+        return
+    .end method
 
-; void print(float)
-.method public static print(F)V
-    .limit locals 5
-    .limit stack 5
-    fload 0
-    getstatic java/lang/System/out Ljava/io/PrintStream;
-    swap
-    invokevirtual java/io/PrintStream/print(F)V
-    return
-.end method
+    ; void print(float)
+    .method public static print(F)V
+        .limit locals 5
+        .limit stack 5
+        fload 0
+        getstatic java/lang/System/out Ljava/io/PrintStream;
+        swap
+        invokevirtual java/io/PrintStream/print(F)V
+        return
+    .end method
 
-; void print(string)
-.method public static print(Ljava/lang/String;)V
-    .limit locals 5
-    .limit stack 5
-    aload 0
-    getstatic java/lang/System/out Ljava/io/PrintStream;
-    swap
-    invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V
-    return
-.end method
+    ; void print(string)
+    .method public static print(Ljava/lang/String;)V
+        .limit locals 5
+        .limit stack 5
+        aload 0
+        getstatic java/lang/System/out Ljava/io/PrintStream;
+        swap
+        invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V
+        return
+    .end method
 
-.method public static main([Ljava/lang/String;)V
-    .limit stack  150
-    .limit locals 150
-    ldc 0
-    istore 0  ; initialize x
-    ldc 0
-    istore 1  ; initialize y
-    goto Lmain
- Lgcd:
-    istore 10   ; store return address in local variable 10
-    istore 12   ; store y in local variable 12 (v in this scope)
-    istore 11   ; store x in local variable 11 (u in this scope)
-    ldc 0
-    istore 13   ; initialize tmp
-    iload 11
-    iload 12
-    isub      ; u-v
-    iflt label1
-    goto label2
- label1:
-    iload 11
-    istore 13 ; tmp=u
-    iload 12
-    istore 11 ; u=v
-    iload 13
-    istore 12 ; v=tmp
- label2:
-    ldc 0
-    iload 12
-    isub
-    ifeq label3
-    goto label4
- label3:
-    iload 11
-    ret 10       ; return from gcd call
- label4:
-    iload 10
-    iload 11
-    iload 12
-    iload 13  ; push all locals on stack before the recursive call
-    iload 12  ; push argument v
-    iload 11
-    iload 12
-    isub      ; push argument u-v
-    jsr Lgcd  ; the recursive call
-    swap      ; this is for restoring the locals we pushed before jsr
-    istore 13 ; the stack is (....locals,returned_result)
-    swap      ; this "swap" solution works since our recursive
-    istore 12 ; function has one return value
-    swap      ; as all other F^3 functions.
-    istore 11
-    swap
-    istore 10
-              ; now we have restored our locals
-              ; the stack is (....returned_result)
-    ret 10    ; we return the returned_result of the recursive call
+    .method public static main([Ljava/lang/String;)V
+        .limit stack  150
+        .limit locals 150
+        ldc 0
+        istore 0  ; initialize x
+        ldc 0
+        istore 1  ; initialize y
+        goto Lmain
+     Lgcd:
+        istore 10   ; store return address in local variable 10
+        istore 12   ; store y in local variable 12 (v in this scope)
+        istore 11   ; store x in local variable 11 (u in this scope)
+        ldc 0
+        istore 13   ; initialize tmp
+        iload 11
+        iload 12
+        isub      ; u-v
+        iflt label1
+        goto label2
+     label1:
+        iload 11
+        istore 13 ; tmp=u
+        iload 12
+        istore 11 ; u=v
+        iload 13
+        istore 12 ; v=tmp
+     label2:
+        ldc 0
+        iload 12
+        isub
+        ifeq label3
+        goto label4
+     label3:
+        iload 11
+        ret 10       ; return from gcd call
+     label4:
+        iload 10
+        iload 11
+        iload 12
+        iload 13  ; push all locals on stack before the recursive call
+        iload 12  ; push argument v
+        iload 11
+        iload 12
+        isub      ; push argument u-v
+        jsr Lgcd  ; the recursive call
+        swap      ; this is for restoring the locals we pushed before jsr
+        istore 13 ; the stack is (....locals,returned_result)
+        swap      ; this "swap" solution works since our recursive
+        istore 12 ; function has one return value
+        swap      ; as all other F^3 functions.
+        istore 11
+        swap
+        istore 10
+                  ; now we have restored our locals
+                  ; the stack is (....returned_result)
+        ret 10    ; we return the returned_result of the recursive call
 
-Lmain:
+    Lmain:
 
-    ldc "Enter two numbers: "
-    invokestatic gcd.print(Ljava/lang/String;)V
-    invokestatic gcd.read()I
-    istore 0                 ; read x;
-    invokestatic gcd.read()I
-    istore 1                 ; read y;
-    iload 0
-    i2f
-    iload 1
-    i2f
-    fdiv
-    invokestatic gcd.print(F)V
-    ldc " "
-    invokestatic gcd.print(Ljava/lang/String;)V
-    iload 0
-    iload 1  ; note : y is on top of x
-    jsr Lgcd
-    invokestatic gcd.print(I)V ; we have the result of gcd on the stack
-    ldc "\n"
-    invokestatic gcd.print(Ljava/lang/String;)V
-    return
-.end method
-```
-
+        ldc "Enter two numbers: "
+        invokestatic gcd.print(Ljava/lang/String;)V
+        invokestatic gcd.read()I
+        istore 0                 ; read x;
+        invokestatic gcd.read()I
+        istore 1                 ; read y;
+        iload 0
+        i2f
+        iload 1
+        i2f
+        fdiv
+        invokestatic gcd.print(F)V
+        ldc " "
+        invokestatic gcd.print(Ljava/lang/String;)V
+        iload 0
+        iload 1  ; note : y is on top of x
+        jsr Lgcd
+        invokestatic gcd.print(I)V ; we have the result of gcd on the stack
+        ldc "\n"
+        invokestatic gcd.print(Ljava/lang/String;)V
+        return
+    .end method

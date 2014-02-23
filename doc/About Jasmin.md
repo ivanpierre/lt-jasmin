@@ -98,4 +98,4 @@ If you want to create an implementation of your favorite programming language wh
 
 Sun's claim that the Java class verifier protects you from hostile programs is a pretty strong one. Jasmin lets you create 'hostile' class files and see if a Java implementation is really as secure as it should be.
 
-Copyright (c) Jonathan Meyer, July 1996
+*Copyright (c) Jonathan Meyer, July 1996*
