@@ -246,7 +246,7 @@ where \<class-name> has the same format as was used by .class and .super. For ex
     .implements Edible
     .implements java/lang/Throwable
 
-### Field Definitions
+### Field Definition
 
 After the header information, the next section of the Jasmin file is a list of field definitions.
 
@@ -281,7 +281,7 @@ whereas the constant:
 becomes
     .field public static final PI F = 3.14
 
-### Method Definitions
+### Method Definition
 
 After listing the fields of the class, the rest of the Jasmin file lists methods defined by the class.
 
@@ -327,7 +327,7 @@ This is used to tag the subsequent instruction(s) with a line number. Debuggers 
        istore_2     // of the source file.
     .line 6
 
-### Field definitions
+### Local variable definition
 
     .var <var-number> is  <name> <descriptor> from <label1> to <label2>
 
@@ -349,7 +349,7 @@ The .var directive is used to define the name, type descriptor and scope of a lo
       return
     .end method
 
-### Throwing exceptions
+### Throwing exception from function
 
     .throws <classname>
 
