@@ -2,6 +2,10 @@
 
 The official Jasmin language plugin for Light Table
 
+## Version 0.0.1
+
+First workable version.
+
 ## Goal
 
 This plugin is a companion for the jvm-clj project to integer Jasmin language for JVM machine code compilation and uncompilation. As the last version Jasmin 2 is quite old and not more supported, we'll try to make it envolve to a version 3 level with a better syntax and a complete coverage of the Java 8 JVM.
