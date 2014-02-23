@@ -18,7 +18,7 @@ A java like declaration for simple code creation, enabeling automatic calculatio
 3. Dynamic and static importation of libraries
 4. Macro definition for DSL instructions creation
 
-The base data for JVM code representation is EDN compatible to ease to directly use the compiler. Jasmine compiler is made to ease the JVM code writing diretly by hand of the read disassembled code. JVM code creation would be easier made computabily with the internal representation.
+The base data for JVM code representation is EDN compatible to ease to directly use the compiler. Jasmin compiler is made to ease the JVM code writing diretly by hand of the read disassembled code. JVM code creation would be easier made computabily with the internal representation.
 
 A leiningen plugin should be created too...
 
