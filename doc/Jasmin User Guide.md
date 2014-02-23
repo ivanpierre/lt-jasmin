@@ -327,7 +327,7 @@ This is used to tag the subsequent instruction(s) with a line number. Debuggers 
        istore_2     // of the source file.
     .line 6
 
-    ...
+### Field definitions
 
     .var <var-number> is  <name> <descriptor> from <label1> to <label2>
 
@@ -349,6 +349,8 @@ The .var directive is used to define the name, type descriptor and scope of a lo
       return
     .end method
 
+### Throwing exceptions
+
     .throws <classname>
 
 Indicates that this method can throw exceptions of the type indicated by \<classname>. e.g.
@@ -356,6 +358,8 @@ Indicates that this method can throw exceptions of the type indicated by \<class
     .throws java/io/IOException
 
 This information isn't required by Java runtime systems, but it is used by the Java compiler to check that methods either catch exceptions they can cause, or declare that they throw them.
+
+### Catching exceptions
 
     .catch <classname> from <label1> to <label2> using <label3>
 
