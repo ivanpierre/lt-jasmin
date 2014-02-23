@@ -1,8 +1,8 @@
-JVM and Jasmin Tutorial
+# JVM and Jasmin Tutorial
 
 This tutorial covers only a subset of JVM specification, which is enough for a person who will use JVM as a target language for F3.
 
-1. Overview
+## 1. Overview
 
 JVM (Java Virtual Machine) is a piece of software, a "virtual" processor, by which Java programs are run. It is an interface between your Java program and the hardware your system uses. It is not a Java compiler, it is the machine which runs the compiled Java code. It is the mechanism which makes Java portable.
 
@@ -12,7 +12,7 @@ Like all other virtual machines, JVM has an instruction set. There are nearly 25
 
 JVM takes "class" files as input. Class files are binary files, so it is not an easy job to write a class file from scratch. So what you need is a tool to convert an ASCII JVM code to a binary class file. Here's where Jasmin comes into picture. You can think of Jasmin as a Java Assembler. So, in the second phase of your project, you will be producing Jasmin files instead of binary "class" files, which will ease your job a lot.
 
-2. A Simple F3 Example Translated into Jasmin
+## 2. A Simple F3 Example Translated into Jasmin
 
 The following is a quick introduction to JVM and Jasmin.
 
@@ -105,7 +105,7 @@ The main method is where the translated code of your F3 program resides. Notice 
 
 The rest in the above code are the instructions, which are explained in detail in 'The Instruction Set' section.
 
-3. Type Descriptors
+## 3. Type Descriptors
 
 When you are defining a method (function) with a .method directive, you specify the type of parameters and the return type by using type descriptors. You will not be using these directives in your program since your only method declaration will be the main method. Other than main method you can declare read and print methods by default in every Jasmin file you produce. The Jasmin code for these built-in functions are given at the end of this tutorial. Anyway, to help you understand the function calls used in a Jasmin program for the built-in F3 functions, read and print, here are the basic type descriptors that may used in a Jasmin program:
 
@@ -119,7 +119,7 @@ For example int f(int a, string b, float c) will have a descriptor .method publi
 
 Now, take a look at the simple program's main method: .method public static main([Ljava/lang/String;)V. It is a method which takes an array of strings as a parameter and returns no results. Notice that string is not a primitive type in JVM, so we have to use the Ljava/lang/String descriptor for strings, which represents the String object of Java.
 
-4. The Instruction Set
+## 4. The Instruction Set
 
 The instructions of JVM are presented in the following format:
 
@@ -128,7 +128,8 @@ The instructions of JVM are presented in the following format:
         (stack before »»»» stack after)
 
 Following are the instructions you may need to use.
-Load and Store Instructions :
+
+### Load and Store Instructions :
 
     iload <local variable number>
         Pushes the value of the local variable which is an integer.
@@ -146,7 +147,7 @@ Load and Store Instructions :
         Push constant on the stack.
         (..... »»»» .....constant)
 
-Stack Manipulation Instructions :
+### Stack Manipulation Instructions :
 
     dup
         The word on top of the stack is duplicated.
@@ -158,7 +159,7 @@ Stack Manipulation Instructions :
         Swap two operand stack words.
         (.....word1 word2 »»»» .....word2 word1)
 
-Arithmetic Instructions :
+### Arithmetic Instructions :
 
     iadd
         Add two integers.
@@ -185,7 +186,7 @@ Arithmetic Instructions :
         Subtract two floats.
         (.....value1 value2 »»»» .....value1-value2)
 
-Branch Instructions :
+### Branch Instructions :
 
     goto <label>
         Jump to label.
@@ -209,7 +210,7 @@ Branch Instructions :
         Jump to label if the value on top of the stack is not equal to 0.
         (.....value »»»» .....)
 
-Logical Instructions :
+### Logical Instructions :
 
     iand
         Bitwise AND (conjunction) of two integers.
@@ -218,7 +219,7 @@ Logical Instructions :
         Bitwise OR (disjunction) of two integers.
         (.....value1 value2 »»»» .....result)
 
-Conversion Instructions :
+### Conversion Instructions :
 
     i2f
         Convert integer to float.
@@ -227,7 +228,7 @@ Conversion Instructions :
         Convert float to integer.
         (.....floatValue »»»» .....intValue)
 
-Subroutine Instructions :
+### Subroutine Instructions :
 
     jsr <label>
         Pushes the return address on the stack and jumps to subroutine indicated by the label.
@@ -238,7 +239,7 @@ Subroutine Instructions :
 
 To implement a function in F3 as a subroutine, what you have to do is to push the arguments in the caller statement and jump to the beginning of the function by using jsr. In the beginning of the function you have to pop the return address and store it in a local variable, and pop the argument, store them in local variables. To return, you have to push the return value and use ret instruction to return to the execution point just after the jsr instruction. With ret, you have to use the local variable number that you used to store the return address.
 
-5. Standard Library Functions of F3
+## 5. Standard Library Functions of F3
 
 There's no such thing as functions with variable number of parameters is java. So a direct implementation of the library functions read and print is not possible. You should handle read and print function invocations at the compile time. The Jasmin method declarations for a one parameter read function and a polymorphic one parameter print function are given in this section.
 
@@ -311,7 +312,7 @@ Label2:
 .end method
 ```
 
-6. An Example of F3 to Jasmin Translation
+## 6. An Example of F3 to Jasmin Translation
 
 In this section a F3 program which has a recursive function is translated into Jasmin. This example will give you an idea on handling function calls, especially recursive ones. Here is our F3 code for the example:
 
